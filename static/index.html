@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Debugger Tool</title>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <body>
+        <header>
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span>CodeLab Debugger</span>
+            </div>
+            <div class="app-controls">
+                <a href="#" id="showFeaturesLink">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Features</span>
+                </a>
+            </div>
+        </header>
+    
+        <div class="marquee-container">
+            <div class="marquee">
+                Questions will be dynamically generated based on your code to help you learn and improve your programming skills
+            </div>
+        </div>
+    
+        <div class="container" id="main-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fas fa-laptop-code"></i>
+                        Code Editor
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="code-editor">
+                        <div class="textarea-container">
+                            <textarea id="code" placeholder="Enter your code here..." oninput="autoResize(this)" spellcheck="false"></textarea>
+                            <div class="paste-icon" id="pasteCodeBtn" onclick="pasteText('code')">
+                                <i class="fas fa-paste"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-row">
+                        <select id="language">
+                            <option value="python">Python</option>
+                            <option value="cpp">C++</option>
+                            <option value="c">C</option>
+                        </select>
+                        <input type="text" id="user-input" placeholder="Input (if needed)" />
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="runCodeBtn" onclick="debugCode()">
+                            <i class="fas fa-play"></i>
+                            <span id="buttonText">Run Code</span>
+                        </button>
+                        <button id="autoCorrectBtn" style="display: none" onclick="autoCorrectCode()">
+                            <i class="fas fa-magic"></i>
+                            <span id="autoCorrectText">Fix Code</span>
+                        </button>
+                    </div>
+                    
+                    <div class="output-section">
+                        <strong>Output:</strong>
+                        <div id="output">Your output will be displayed here</div>
+                    </div>
+                    
+                    <div class="output-section">
+                        <strong>Corrected Code:</strong>
+                        <div class="textarea-container">
+                            <pre id="corrected-code"></pre>
+                            <div class="copy-icon" id="copyCorrectedCodeBtn" onclick="copyText('corrected-code')" style="display: none">
+                                <i class="fas fa-copy"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fas fa-project-diagram"></i>
+                        Code Visualization
+                    </div>
+                    <div class="toggle-container">
+                        <span>Enable</span>
+                        <div class="toggle" id="visualizer-toggle"></div>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div id="visualization-output"></div>
+                </div>
+                
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fas fa-question-circle"></i>
+                        Generated Questions
+                    </div>
+                    <div class="toggle-container">
+                        <span>Enable</span>
+                        <div class="toggle" id="questions-toggle"></div>
+                    </div>
+                </div>
+                <div class="panel-content">
+                    <div class="spinner" id="spinner" style="display: none"></div>
+                    <ul id="questions-list"></ul>
+                </div>
+            </div>
+        </div>
+    
+        <div id="watch-history-icon" onclick="toggleWatchHistory()">
+            <i class="fas fa-history"></i>
+        </div>
+    
+        <div id="watch-history">
+            <div class="history-header">
+                <span class="history-title">Code History</span>
+                <button onclick="clearHistory()" style="background: none; border: none; color: white; cursor: pointer;">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+            <div class="history-body">
+                <ul id="watch-history-list"></ul>
+            </div>
+        </div>
+    
+        <div class="popup" id="features-popup">
+            <div class="popup-content">
+                <div class="popup-header">
+                    <div class="popup-title">CodeLab Features</div>
+                    <button class="popup-close" id="closePopupBtn">&times;</button>
+                </div>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-bug"></i></div>
+                        <div class="feature-content">
+                            <h3>Code Debugging</h3>
+                            <p>Debug code in multiple languages (Python, C++, C) and get instant output.</p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="feature-content">
+                            <h3>Execution Visualization</h3>
+                            <p>Watch your code execute step-by-step with visual highlighting (Python only).</p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-question"></i></div>
+                        <div class="feature-content">
+                            <h3>Interactive Learning</h3>
+                            <p>Generate practice questions based on your code to deepen your understanding.</p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-magic"></i></div>
+                        <div class="feature-content">
+                            <h3>Auto-correction</h3>
+                            <p>Get smart suggestions to fix errors in your code automatically.</p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-history"></i></div>
+                        <div class="feature-content">
+                            <h3>Code History</h3>
+                            <p>Track your previous code runs and easily restore them when needed.</p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="popup-footer">
+                    <button class="btn-close" id="closeFeatureBtn">Got it!</button>
+                </div>
+            </div>
+        </div>
+    
+        <div class="confirmation" id="confirmation">
+            <div class="confirmation-content">
+                <div class="confirmation-message">Your code contains errors. Would you like to see the corrected version?</div>
+                <div class="confirmation-buttons">
+                    <button class="btn-confirm btn-yes" onclick="getCorrectCode()">Yes, fix it</button>
+                    <button class="btn-confirm btn-no" onclick="dismissConfirmation()">No, thanks</button>
+                </div>
+            </div>
+        </div>
+    
+        <div class="confirmation" id="history-confirmation">
+            <div class="confirmation-content">
+                <div class="confirmation-message">Do you want to use this code from your history?</div>
+                <div class="confirmation-buttons">
+                    <button class="btn-confirm btn-yes" id="history-confirm-yes">Yes, use it</button>
+                    <button class="btn-confirm btn-no" id="history-confirm-no">No, cancel</button>
+                </div>
+            </div>
+        </div>
+    
+        <div class="confirmation" id="clear-history-confirmation">
+            <div class="confirmation-content">
+                <div class="confirmation-message">Are you sure you want to clear your entire code history?</div>
+                <div class="confirmation-buttons">
+                    <button class="btn-confirm btn-yes" id="clear-history-yes">Yes, clear it</button>
+                    <button class="btn-confirm btn-no" id="clear-history-no">No, keep it</button>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script>;
+</body>
+</html>
